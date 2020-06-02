@@ -15,40 +15,31 @@ def read(*paths):
 
 
 # Prepare
-PACKAGE = 'ckan_datapackage_tools'
-NAME = PACKAGE.replace('_', '-')
+PACKAGE = 'migrate metadata'
+NAME = PACKAGE.replace(' ', '-')
 INSTALL_REQUIRES = [
-    'six>=1.9,<2.0',
-    'python-slugify>=1.0,<2.0'
-]
-TESTS_REQUIRE = [
-    'pylama',
-    'tox',
-    'requests_mock'
-]
+    'ckan_datapackage_tools'
+    ]
+
 README = read('README.md')
-VERSION = read(PACKAGE, 'VERSION')
 PACKAGES = find_packages(exclude=['examples', 'tests'])
 
 
 # Run
 setup(
     name=NAME,
-    version=VERSION,
     packages=PACKAGES,
     include_package_data=True,
     install_requires=INSTALL_REQUIRES,
-    tests_require=TESTS_REQUIRE,
-    extras_require={'develop': TESTS_REQUIRE},
     zip_safe=False,
     long_description=README,
     description='{{ DESCRIPTION }}',
     author='Open Knowledge International',
-    url='https://github.com/frictionlessdata/ckan_datapackage_tools',
+    url='https://github.com/datopian/migrate-metadata',
     license='MIT',
     keywords=[
-        'data',
-        'ckan'
+        'migrate',
+        'metadata'
     ],
     classifiers=[
         'Environment :: Web Environment',
