@@ -15,8 +15,8 @@ def read(*paths):
 
 
 # Prepare
-PACKAGE = 'migrate metadata'
-NAME = PACKAGE.replace(' ', '-')
+PACKAGE = 'migrate_metadata'
+NAME = PACKAGE.replace('_', '-')
 INSTALL_REQUIRES = [
     'ckan_datapackage_tools'
     ]
