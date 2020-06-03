@@ -18,7 +18,8 @@ def read(*paths):
 PACKAGE = 'migrate_metadata'
 NAME = PACKAGE.replace('_', '-')
 INSTALL_REQUIRES = [
-    'ckan_datapackage_tools'
+    'ckan_datapackage_tools',
+    'metastore-lib'
     ]
 
 README = read('README.md')
