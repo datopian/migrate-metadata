@@ -39,8 +39,12 @@ class Migrator:
 
             try:
                 package_info = self.metastore_client.create(pkg_name, data_package_json)
+                return True
             except store.exc.Conflict as e:
                 log.info("{} dataset already exists".format(pkg_name))
+                return False
+
+        return False
 
     def iterate_pkgs(self, data):
         pkgs_list = data.get('result')
