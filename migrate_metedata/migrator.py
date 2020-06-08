@@ -1,55 +1,26 @@
-import urllib
-import json
 import logging
 
+from Ckan_API.Ckan_API import CkanAPICall
 import ckan_datapackage_tools.converter as converter
-import metastore.backend as store
+import metastore.backend as metastore
 
 log = logging.getLogger(__name__)
 
 
-class Migrator:
-    """Migrator of metadata from one store to another
-    """
+def wrapper(ckan_api_url, ckan_api_key, metastore_type, metastore_options):
+    ckan_client = CkanAPICall(ckan_api_url, ckan_api_key)
+    metastore_client = metastore.create_metastore(metastore_type, **metastore_options)
+    return migrate_all_datasets(ckan_client, metastore_client)
 
-    def __init__(self, ckan_classic_api, new_metastore, options):
-        self.ckan_classic_api = ckan_classic_api
-        self.metastore_client = store.create_metastore(new_metastore, **options)
-
-    def migrate_dataset(self, pkg_name):
-        urlpath = self.create_url('/package_show?id=', pkg_name)
-        response = json.loads(urllib.urlopen(urlpath).read())
-        self.create_pkg(response, pkg_name)
-
-    def migrate_all_datasets(self):
-        urlpath = self.create_url('/package_list')
-        response = json.loads(urllib.urlopen(urlpath).read())
-        self.iterate_pkgs(response)
-
-    def create_url(self, suffix, pkg_name=''):
-        url = self.ckan_classic_api + suffix
-        url += pkg_name
-        return url
-
-    def create_pkg(self, data, pkg_name):
-        pkg_dict = data.get('result')
-
-        if pkg_dict:
-            data_package_json = converter.dataset_to_datapackage(pkg_dict)
-
-            try:
-                package_info = self.metastore_client.create(pkg_name, data_package_json)
-                return True
-            except store.exc.Conflict as e:
-                log.info("{} dataset already exists".format(pkg_name))
-                return False
-
-        return False
-
-    def iterate_pkgs(self, data):
-        pkgs_list = data.get('result')
-        if not pkgs_list:
-            raise ValueError("There is no dataset available in your CKAN")
-
-        for pkg_name in pkgs_list:
-            self.migrate_dataset(pkg_name)
+def migrate_all_datasets(ckan_client, metastore_client):
+    datapackages = (converter.dataset_to_datapackage(ds) for ds in ckan_client.get_all_datasets())
+    stored = 0
+    for package in datapackages:
+        try:
+            metastore_client.create(package['name'], package)
+            stored += 1
+        except metastore.exc.Conflict:
+            log.info("package already exists")
+        except Exception:
+            log.error("failed storing package: %s", package['name'])
+    return stored

@@ -1,35 +1,21 @@
-# from mock import patch
+import pytest
+from mock import patch
+from migrate_metedata import migrator
+import metastore.backend as metastore
+from Ckan_API.Ckan_API import CkanAPICall
 
-from migrate_metedata.migrator import Migrator
-import metastore.backend as store
 
-migrator_obj = Migrator('https://demo.ckan.org/api/3/action', 'filesystem', dict(uri='mem://'))
+@patch('migrator.CkanAPICall.get_all_datasets')
+def test_migrate_all_datasets(mock_get_all_datasets):
+    mock_reutrn_value = {'result': [{0: {
+                    "name": "test_pkg_0"}},
+                    {1: {
+                    "name": "test_pkg_1"}}
+                    ]}
+    mock_get_all_datasets.return_value = mock_reutrn_value
+    ckan_client = CkanAPICall("http://test", "xyz-123")
 
+    metastore_client = metastore.create_metastore("filesystem", dict(uri="mem://"))
+    number_of_datasets = migrator.migrate_all_datasets(ckan_client, metastore_client)
 
-class TestMigrator:
-
-    def test_create_url_with_pkg(self):
-        suffix = '/package_show?id='
-        pkg_name = 'world-population'
-        url = 'https://demo.ckan.org/api/3/action' + suffix + pkg_name
-
-        assert migrator_obj.create_url(suffix, pkg_name) == url
-
-    def test_create_url_without_pkg(self):
-        suffix = '/package_list'
-        url = 'https://demo.ckan.org/api/3/action' + suffix
-
-        assert migrator_obj.create_url(suffix) == url
-
-    def test_create_pkg(self):
-        data = {"result": {"name": "test_pkg",
-               "resources": [
-                   {"path": "data/myresource.csv"}
-               ]}}
-        pkg_name = "test_pkg"
-
-        assert migrator_obj.create_pkg(data, pkg_name) == True
-
-    # @patch('Migrator.urllib.urlopen')
-    # def test_getting_todos(self, mock_urlopen):
-    #     pass
+    assert len(mock_reutrn_value) == number_of_datasets
