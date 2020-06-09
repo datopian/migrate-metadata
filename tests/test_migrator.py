@@ -2,18 +2,20 @@ import pytest
 from mock import patch
 from migrate_metedata import migrator
 import metastore.backend as metastore
-from Ckan_API.Ckan_API import CkanAPICall
+from Ckan_API.Ckan_API import CkanAPIClient
 
 
-@patch('migrator.CkanAPICall.get_all_datasets')
+@patch('migrator.CkanAPIClient.get_all_datasets')
 def test_migrate_all_datasets(mock_get_all_datasets):
     mock_reutrn_value = {'result': [{0: {
-                    "name": "test_pkg_0"}},
+                    "name": "test_pkg_0",
+                    "author": "test_user"}},
                     {1: {
-                    "name": "test_pkg_1"}}
+                    "name": "test_pkg_1",
+                    "author": "test_user"}}
                     ]}
     mock_get_all_datasets.return_value = mock_reutrn_value
-    ckan_client = CkanAPICall("http://test", "xyz-123")
+    ckan_client = CkanAPIClient("http://test", "xyz-123")
 
     metastore_client = metastore.create_metastore("filesystem", dict(uri="mem://"))
     number_of_datasets = migrator.migrate_all_datasets(ckan_client, metastore_client)

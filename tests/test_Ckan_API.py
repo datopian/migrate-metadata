@@ -1,13 +1,13 @@
 import pytest
 import requests_mock
-from Ckan_API.Ckan_API import CkanAPICall
+from Ckan_API.Ckan_API import CkanAPIClient
 
 
-class TestCkanAPICall:
+class TestCkanAPIClient:
 
     @pytest.fixture()
     def ckan_client(self):
-        ckan_api_obj = CkanAPICall("http://test", "xyz-123")
+        ckan_api_obj = CkanAPIClient("http://test", "xyz-123")
         return ckan_api_obj
 
     def test_create_url(self, ckan_client):
@@ -20,7 +20,8 @@ class TestCkanAPICall:
         url = 'http://test/package_show?'
         pkg_name = "test_pkg"
         json_resp = {'result': {"package_dict": {
-                                 "name": "test_pkg"
+                                 "name": "test_pkg",
+                                 "author": "test_user"
                              }}}
         mock_request.get(url, params={'id': pkg_name},
                             headers={"Authorization": "xyz-123"},
@@ -33,9 +34,11 @@ class TestCkanAPICall:
     def test_package_list(self, mock_request, ckan_client):
         url = 'http://test/package_list'
         json_resp = {'result': [{0: {
-                                 "name": "test_pkg_0"}},
+                                 "name": "test_pkg_0",
+                                 "author": "test_user"}},
                                 {1: {
-                                 "name": "test_pkg_1"}}
+                                 "name": "test_pkg_1",
+                                 "author": "test_user"}}
                              ]}
         mock_request.get(url, headers={"Authorization": "xyz-123"},
                             json=json_resp)
