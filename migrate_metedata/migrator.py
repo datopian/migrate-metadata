@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 def wrapper(ckan_api_url, ckan_api_key, metastore_type, metastore_options):
     ckan_client = CkanAPIClient(ckan_api_url, ckan_api_key)
-    metastore_client = metastore.create_metastore(metastore_type, **metastore_options)
+    metastore_client = metastore.create_metastore(metastore_type, metastore_options)
     return migrate_all_datasets(ckan_client, metastore_client)
 
 def migrate_all_datasets(ckan_client, metastore_client):
