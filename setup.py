@@ -19,7 +19,7 @@ PACKAGE = 'migrate_metadata'
 NAME = PACKAGE.replace('_', '-')
 INSTALL_REQUIRES = [
     'ckan_datapackage_tools',
-    'metastore-lib',
+    'metastore-lib@git+https://github.com/datopian/metastore-lib#egg=metastore-lib-0.0.1',
     'requests'
     ]
 
@@ -31,6 +31,7 @@ PACKAGES = find_packages(exclude=['examples', 'tests'])
 setup(
     name=NAME,
     packages=PACKAGES,
+    version=open('VERSION').read(),
     include_package_data=True,
     install_requires=INSTALL_REQUIRES,
     zip_safe=False,

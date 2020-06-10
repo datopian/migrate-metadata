@@ -14,11 +14,11 @@ class CkanAPIClient:
         return (self.package_show(p) for p in packages)
 
     def package_list(self):
-        json_response = self._send_get_request('/package_list')
+        json_response = self._send_get_request('/api/3/action/package_list')
         return json_response.get('result')
 
     def package_show(self, pkg_name):
-        json_response = self._send_get_request('/package_show?',
+        json_response = self._send_get_request('/api/3/action/package_show?',
                                                 params={'id': pkg_name})
         return json_response.get('result')
 
