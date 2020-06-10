@@ -18,7 +18,7 @@ class CkanAPIClient:
         return json_response.get('result')
 
     def package_show(self, pkg_name):
-        json_response = self._send_get_request('/api/3/action/package_show?',
+        json_response = self._send_get_request('/api/3/action/package_show',
                                                 params={'id': pkg_name})
         return json_response.get('result')
 

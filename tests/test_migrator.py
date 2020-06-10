@@ -2,7 +2,7 @@ import pytest
 from mock import patch
 from migrate_metedata import migrator
 import metastore.backend as metastore
-from Ckan_API.Ckan_API import CkanAPIClient
+from ckan_api.ckan_api import CkanAPIClient
 
 
 @patch('migrator.CkanAPIClient.get_all_datasets')

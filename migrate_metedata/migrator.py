@@ -1,8 +1,9 @@
 import logging
 
-from Ckan_API.Ckan_API import CkanAPIClient
+from ckan_api.ckan_api import CkanAPIClient
 import ckan_datapackage_tools.converter as converter
 import metastore.backend as metastore
+from metastore.types import Author
 
 log = logging.getLogger(__name__)
 
@@ -17,7 +18,10 @@ def migrate_all_datasets(ckan_client, metastore_client):
     stored = 0
     for package in datapackages:
         try:
-            metastore_client.create(package['name'], package, author=package['author'])
+            package_author = package['author']
+            author = Author(package_author['name'], package_author['email'])
+
+            metastore_client.create(package['name'], package, author=author)
             stored += 1
         except metastore.exc.Conflict:
             log.info("package already exists")
