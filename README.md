@@ -7,13 +7,13 @@ Migrate Metadata is a lib to store datasets from ckan to some other store (like 
 First, clone the repo via git:
 
 ```bash
-$ git clone git@github.com:datopian/ckan3-py-sdk.git
+$ git clone https://github.com/datopian/migrate-metadata.git
 ```
 
 Move to directory:
 
 ```bash
-$ cd
+$ cd migrate-metadata
 ```
 Install the package:
 
