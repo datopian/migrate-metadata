@@ -29,7 +29,11 @@ datasets_stored = migrator.wrapper(ckan_api_url, ckan_auth_token, store, configs
 
 # e.g. if store is filesystem
 datasets_stored = migrator.wrapper("http://ckan:5000", "123-abc-321-xyz", "filesystem", {"uri": "mem://"})
+
+# e.g. if store is github
+datasets_stored = migrator.wrapper("http://ckan:5000", "123-abc-321-xyz", "github", {"token": "xxxx-1223-31411"})
 ```
+
 
 ## Tests
 
