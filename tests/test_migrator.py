@@ -1,6 +1,6 @@
 import pytest
 from mock import patch
-from migrate_metedata import migrator
+from migrate_metadata import migrator
 import metastore.backend as metastore
 from ckan_api.ckan_api import CkanAPIClient
 

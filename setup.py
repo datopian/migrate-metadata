@@ -2,7 +2,7 @@
 from os import path
 from setuptools import setup, find_packages
 
-import migrate_metedata
+import migrate_metadata
 
 here = path.abspath(path.dirname(__file__))
 
@@ -14,7 +14,7 @@ with open(path.join(here, 'README.md')) as f:
 setup(
     name='migrate-metadata',
     packages=find_packages('migrate_metadata'),
-    version=migrate_metedata.__version__,
+    version=migrate_metadata.__version__,
     include_package_data=True,
     zip_safe=False,
     long_description=long_description,
