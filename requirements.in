@@ -1,0 +1,3 @@
+requests ==2.*
+metastore-lib ==0.*
+frictionless-ckan-mapper ==1.*
