@@ -1,43 +1,26 @@
 # -*- coding: utf-8 -*-
-
-import os
-import io
+from os import path
 from setuptools import setup, find_packages
 
+import migrate_metedata
 
-# Helpers
-def read(*paths):
-    """Read a text file."""
-    basedir = os.path.dirname(__file__)
-    fullpath = os.path.join(basedir, *paths)
-    contents = io.open(fullpath, encoding='utf-8').read().strip()
-    return contents
+here = path.abspath(path.dirname(__file__))
 
-
-# Prepare
-PACKAGE = 'migrate_metadata'
-NAME = PACKAGE.replace('_', '-')
-INSTALL_REQUIRES = [
-    'ckan_datapackage_tools',
-    'metastore-lib@git+https://github.com/datopian/metastore-lib#egg=metastore-lib-0.0.1',
-    'requests'
-    ]
-
-README = read('README.md')
-PACKAGES = find_packages(exclude=['examples', 'tests'])
+# Get the long description from the relevant file
+with open(path.join(here, 'README.md')) as f:
+    long_description = f.read()
 
 
-# Run
 setup(
-    name=NAME,
-    packages=PACKAGES,
-    version=open('VERSION').read(),
+    name='migrate-metadata',
+    packages=find_packages('migrate_metadata'),
+    version=migrate_metedata.__version__,
     include_package_data=True,
-    install_requires=INSTALL_REQUIRES,
     zip_safe=False,
-    long_description=README,
-    description='{{ DESCRIPTION }}',
-    author='Open Knowledge International',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    description='Tool for migrating CKAN dataset metadata to metastore-lib',
+    author='Datopian / Viderum Inc.',
     url='https://github.com/datopian/migrate-metadata',
     license='MIT',
     keywords=[
@@ -53,4 +36,9 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    install_requires=[
+        'ckan_datapackage_tools',
+        'metastore-lib',
+        'requests'
+    ]
 )
