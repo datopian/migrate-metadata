@@ -66,7 +66,7 @@ $ metastore-import-ckan -c http://ckan:5000 -k 123-abc-321-xyz \
 To run tests:
 
 ```bash
- pytest tests
+make test
 ```
 
 ## License

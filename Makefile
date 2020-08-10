@@ -5,6 +5,7 @@ TESTS_DIR := tests
 
 SHELL := bash
 PYTHON := python
+PYTEST := pytest
 PIP := pip
 PIP_COMPILE := pip-compile
 
@@ -21,6 +22,11 @@ requirements.txt: requirements.in
 ## Update requirements files for the current Python version
 requirements: $(SENTINELS)/requirements
 .PHONY: requirements
+
+## Run all tests
+test:
+	$(PYTEST) $(PACKAGE_DIRS) $(TESTS_DIR)
+.PHONY: test
 
 # --- Private Targets ---
 
