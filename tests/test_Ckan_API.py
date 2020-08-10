@@ -1,6 +1,7 @@
 import pytest
 import requests_mock
-from ckan_api.ckan_api import CkanAPIClient
+
+from migrate_metadata.ckan_api import CkanAPIClient
 
 
 class TestCkanAPIClient:

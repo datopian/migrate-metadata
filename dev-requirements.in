@@ -1,1 +1,4 @@
 pip-tools ==5.*
+pytest ==4.*
+mock ==3.*
+requests-mock ==1.*
