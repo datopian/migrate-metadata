@@ -15,11 +15,16 @@ from .ckan_api import CkanAPIClient
 
 log = logging.getLogger(__name__)
 
+LOG_FORMAT='%(asctime)-15s %(name)-15s %(levelname)s %(message)s'
+
 
 def migrate_all_datasets(ckan_client, metastore_client):
     """Migrate all datasets in the CKAN database to metastore
     """
-    return migrate_datasets(ckan_client.get_all_datasets(), metastore_client)
+    ds_list = ckan_client.package_list()
+    log.debug("Found a total of %d datasets in CKAN instance", len(ds_list))
+    datasets_iter = (ckan_client.package_show(p) for p in ds_list)
+    return migrate_datasets(datasets_iter, metastore_client)
 
 
 def migrate_datasets(datasets, metastore_client):
@@ -28,16 +33,27 @@ def migrate_datasets(datasets, metastore_client):
     datapackages = (ckan_to_frictionless.dataset(ds) for ds in datasets)
     stored = 0
     for package in datapackages:
+        log.debug("Converted dataset to datapacakge: %s", package)
         try:
-            package_author = package['author']
-            author = Author(package_author['name'], package_author['email'])
+            author = _get_author(package)
             metastore_client.create(package['name'], package, author=author)
             stored += 1
+            log.debug("Successfully stored package: %s", package['name'])
         except Conflict:
-            log.info("package already exists")
+            log.info("Package already exists in metastore bakcend: %s", package['name'])
         except Exception:
-            log.exception("failed storing package: %s", package['name'])
+            log.exception("Failed storing package: %s", package['name'])
     return stored
+
+
+def _get_author(package):
+    """Extract author object from datapackage
+    """
+    try:
+        package_author = filter(lambda c: c['role'] == 'author', package['contributors'])[0]
+        return Author(package_author['name'], package_author['email'])
+    except (KeyError, IndexError):
+        return None
 
 
 class JsonParamType(click.ParamType):
@@ -62,9 +78,19 @@ class JsonParamType(click.ParamType):
 @click.option('--ckan-api-key', '-k', type=str, required=True, help='CKAN API key')
 @click.option('--metastore-type', '-m', type=str, required=True, help='metastore-lib backend type')
 @click.option('--metastore-options', '-o', type=JsonParamType(), default={}, help='metastore-lib options')
-def main(ckan_api_url, ckan_api_key, metastore_type, metastore_options):
+@click.option('--verbose', '-v', count=True, help='control output verbosity')
+def main(ckan_api_url, ckan_api_key, metastore_type, metastore_options, verbose):
     """Import all CKAN datasets into a metastore-lib backend
     """
+    if verbose > 1:
+        level = logging.DEBUG
+    elif verbose > 0:
+        level = logging.INFO
+    else:
+        level = logging.WARNING
+
+    logging.basicConfig(level=level, format=LOG_FORMAT)
+
     ckan_client = CkanAPIClient(ckan_api_url, ckan_api_key)
     metastore_client = create_metastore(metastore_type, metastore_options)
     result = migrate_all_datasets(ckan_client, metastore_client)
