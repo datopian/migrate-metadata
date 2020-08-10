@@ -1,6 +1,5 @@
-from urllib.parse import urljoin
-
 import requests
+from six.moves.urllib.parse import urljoin
 
 
 class CkanAPIClient:

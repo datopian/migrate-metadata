@@ -37,6 +37,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     install_requires=[
+        'six',
         'ckan_datapackage_tools',
         'metastore-lib',
         'requests'

@@ -20,7 +20,7 @@ pyjwt==1.7.1              # via pygithub
 python-dateutil==2.8.1    # via metastore-lib
 pytz==2020.1              # via fs, metastore-lib
 requests==2.24.0          # via -r requirements.in, pygithub
-six==1.15.0               # via frictionless-ckan-mapper, fs, metastore-lib, pygithub, python-dateutil
+six==1.15.0               # via -r requirements.in, frictionless-ckan-mapper, fs, metastore-lib, pygithub, python-dateutil
 typing-extensions==3.7.4.2  # via metastore-lib
 typing==3.7.4.3           # via fs, metastore-lib, typing-extensions
 urllib3==1.25.10          # via requests

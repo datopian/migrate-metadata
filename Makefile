@@ -8,6 +8,8 @@ PYTHON := python
 PIP := pip
 PIP_COMPILE := pip-compile
 
+SENTINELS := .make-cache
+
 default: help
 
 dev-requirements.txt: dev-requirements.in
