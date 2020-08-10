@@ -1,11 +1,11 @@
-import pytest
-from mock import patch
-from migrate_metedata import migrator
 import metastore.backend as metastore
-from ckan_api.ckan_api import CkanAPIClient
+from mock import patch
+
+from migrate_metadata import migrator
+from migrate_metadata.ckan_api import CkanAPIClient
 
 
-@patch('migrator.CkanAPIClient.get_all_datasets')
+@patch('migrate_metadata.ckan_api.CkanAPIClient.get_all_datasets')
 def test_migrate_all_datasets(mock_get_all_datasets):
     mock_reutrn_value = {'result': [{0: {
                     "name": "test_pkg_0",

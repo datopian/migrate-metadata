@@ -1,17 +1,13 @@
-from urllib.parse import urljoin
-
 import requests
+from six.moves.urllib.parse import urljoin
 
 
 class CkanAPIClient:
-
+    """Wrapper for the CKAN API
+    """
     def __init__(self, ckan_api_url, ckan_api_key):
         self.ckan_api_url = ckan_api_url
         self.ckan_api_key = ckan_api_key
-
-    def get_all_datasets(self):
-        packages = self.package_list()
-        return (self.package_show(p) for p in packages)
 
     def package_list(self):
         json_response = self._send_get_request('/api/3/action/package_list')
