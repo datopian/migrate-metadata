@@ -1,3 +1,4 @@
+click ==7.*
 requests ==2.*
 six ==1.*
 metastore-lib ==0.*

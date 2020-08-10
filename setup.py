@@ -36,10 +36,15 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    entry_points='''
+        [console_scripts]
+        metastore-import-ckan=migrate_metadata.migrator:main
+    ''',
     install_requires=[
+        'click',
         'six',
+        'requests',
         'ckan_datapackage_tools',
         'metastore-lib',
-        'requests'
-    ]
+    ],
 )

@@ -8,6 +8,7 @@ appdirs==1.4.4            # via fs
 backports.os==0.1.1       # via fs
 certifi==2020.6.20        # via requests
 chardet==3.0.4            # via requests
+click==7.1.2              # via -r requirements.in
 deprecated==1.2.10        # via pygithub
 enum34==1.1.10            # via fs
 frictionless-ckan-mapper==1.0.6  # via -r requirements.in

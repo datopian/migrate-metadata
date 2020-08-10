@@ -63,7 +63,7 @@ class JsonParamType(click.ParamType):
 @click.option('--metastore-type', '-m', type=str, required=True, help='metastore-lib backend type')
 @click.option('--metastore-options', '-o', type=JsonParamType(), default={}, help='metastore-lib options')
 def main(ckan_api_url, ckan_api_key, metastore_type, metastore_options):
-    """Main CLI entry point
+    """Import all CKAN datasets into a metastore-lib backend
     """
     ckan_client = CkanAPIClient(ckan_api_url, ckan_api_key)
     metastore_client = create_metastore(metastore_type, metastore_options)
