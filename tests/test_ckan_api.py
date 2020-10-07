@@ -45,9 +45,10 @@ def test_package_list(requests_mock, ckan_client):
 
 
 def test_package_show(requests_mock, ckan_client):
+    pkg_name = "github-dataset"
     mock_content = '{"help": "http://ckan:5000/api/3/action/help_show?name=package_show", "success": true, "result": {"name": "github-dataset"} }'
-    mocked_url = ckan_client.create_url('/api/3/action/package_show')
+    mocked_url = ckan_client.create_url('/api/3/action/package_show?id={}'.format(pkg_name))
     requests_mock.get(mocked_url, content=mock_content)
     result = json.loads(mock_content)['result']
 
-    assert result == ckan_client.package_show("github-dataset")
+    assert result == ckan_client.package_show(pkg_name)
