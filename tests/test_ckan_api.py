@@ -1,6 +1,7 @@
+import json
+
 import pytest
 import requests_mock
-import json
 
 from migrate_metadata.ckan_api import CkanAPIClient, CkanAPIError
 

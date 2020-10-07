@@ -1,5 +1,6 @@
 import requests
-from six.moves.urllib.parse import urljoin, urlencode
+from six.moves.urllib.parse import urlencode, urljoin
+
 
 class CkanAPIError(Exception):
     pass
@@ -40,7 +41,3 @@ class CkanAPIClient:
             raise CkanAPIError(data.get('error')['message'])
 
         return data.get('result')
-
-
-
-

@@ -7,6 +7,7 @@ import logging
 
 import click
 from frictionless_ckan_mapper import ckan_to_frictionless
+
 from metastore import create_metastore
 from metastore.backend.exc import Conflict
 from metastore.types import Author
