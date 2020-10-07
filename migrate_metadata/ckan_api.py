@@ -1,5 +1,8 @@
 import requests
-from six.moves.urllib.parse import urljoin
+from six.moves.urllib.parse import urljoin, urlencode
+
+class CkanAPIError(Exception):
+    pass
 
 
 class CkanAPIClient:
@@ -10,20 +13,34 @@ class CkanAPIClient:
         self.ckan_api_key = ckan_api_key
 
     def package_list(self):
-        json_response = self._send_get_request('/api/3/action/package_list')
-        return json_response.get('result')
+        url = self.create_url('/api/3/action/package_list')
+        response = requests.get(
+            url, headers={'Authorization': self.ckan_api_key}
+            )
+        data = response.json()
+        return self.get_result(data)
 
     def package_show(self, pkg_name):
-        json_response = self._send_get_request('/api/3/action/package_show',
-                                                params={'id': pkg_name})
-        return json_response.get('result')
+        params = {'id': pkg_name}
+        url = self.create_url('/api/3/action/package_show', params=params)
+        response = requests.get(
+            url, headers={'Authorization': self.ckan_api_key}
+            )
+        data = response.json()
+        return self.get_result(data)
 
-    def create_url(self, suffix):
-        url = urljoin(self.ckan_api_url, suffix)
+    def create_url(self, path, params=None):
+        url = urljoin(self.ckan_api_url, path)
+        if params:
+            url += '?' + urlencode(params)
         return url
 
-    def _send_get_request(self, path, params=None):
-            urlpath = self.create_url(path)
-            response = requests.get(urlpath, params=params,
-                                    headers={'Authorization': self.ckan_api_key})
-            return response.json()
+    def get_result(self, data):
+        if data.get('success') == False:
+            raise CkanAPIError(data.get('error')['message'])
+
+        return data.get('result')
+
+
+
+
