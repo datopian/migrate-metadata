@@ -30,7 +30,9 @@ def migrate_all_datasets(ckan_client, metastore_client):
 def migrate_datasets(datasets, metastore_client):
     """Migrate all datasets in an iterable to metastore
     """
-    datapackages = (ckan_to_frictionless.dataset(ds) for ds in datasets)
+    datapackages = (
+        ckan_to_frictionless.dataset(ds) for ds in datasets if ds['type'] == 'dataset'
+        )
     stored = 0
     for package in datapackages:
         log.debug("Converted dataset to datapacakge: %s", package)
@@ -40,7 +42,7 @@ def migrate_datasets(datasets, metastore_client):
             stored += 1
             log.debug("Successfully stored package: %s", package['name'])
         except Conflict:
-            log.info("Package already exists in metastore bakcend: %s", package['name'])
+            log.info("Package already exists in metastore backend: %s", package['name'])
         except Exception:
             log.exception("Failed storing package: %s", package['name'])
     return stored
