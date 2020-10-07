@@ -37,7 +37,7 @@ class CkanAPIClient:
         return url
 
     def get_result(self, data):
-        if data.get('success') == False:
+        if not data.get('success'):
             raise CkanAPIError(data.get('error')['message'])
 
         return data.get('result')

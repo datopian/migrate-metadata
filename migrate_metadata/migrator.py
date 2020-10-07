@@ -16,7 +16,7 @@ from .ckan_api import CkanAPIClient
 
 log = logging.getLogger(__name__)
 
-LOG_FORMAT='%(asctime)-15s %(name)-15s %(levelname)s %(message)s'
+LOG_FORMAT = '%(asctime)-15s %(name)-15s %(levelname)s %(message)s'
 
 
 def migrate_all_datasets(ckan_client, metastore_client):
@@ -63,6 +63,7 @@ class JsonParamType(click.ParamType):
     """JSON serialized object as a click parameter
     """
     name = "json"
+
     def convert(self, value, param, ctx):
         try:
             return json.loads(value)
