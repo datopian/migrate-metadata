@@ -23,12 +23,11 @@ def test_create_url_with_params(ckan_client):
     params = {'id': package_id}
     assert expected_url == ckan_client.create_url(path, params=params)
 
-def test_good_result(ckan_client):
+def test_get_result_returns_result_element_of_response(ckan_client):
     data = json.loads('{"help": "http://ckan:5000/api/3/action/help_show?name=package_list", "success": true, "result": ["dataset-with-no-releases", "github-dataset", "new-dataset-on-github", "testing-personal-storage-account", "testing-removed-resources"]}')
-
     assert ckan_client.get_result(data) == data['result']
 
-def test_bad_api_call(ckan_client):
+def test_get_result_raises_error_if_api_call_returns_success_false(ckan_client):
     data = json.loads('{"help": "http://ckan:5000/api/3/action/help_show?name=package_show", "success": false, "error": {"message": "Not found", "__type": "Not Found Error"}}')
     with pytest.raises(CkanAPIError) as execinfo:
         ckan_client.get_result(data)
