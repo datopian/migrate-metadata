@@ -1,6 +1,6 @@
 # Makefile for migrate-metadata
 PACKAGE_NAME := migrate-metadata
-PACKAGE_DIRS := migrate_metadata
+PYTEST_EXTRA_ARGS := -s
 TESTS_DIR := tests
 
 SHELL := bash
@@ -25,7 +25,7 @@ requirements: $(SENTINELS)/requirements
 
 ## Run all tests
 test:
-	$(PYTEST) $(PACKAGE_DIRS) $(TESTS_DIR)
+	$(PYTEST) $(PYTEST_EXTRA_ARGS) $(TESTS_DIR)
 .PHONY: test
 
 # --- Private Targets ---
