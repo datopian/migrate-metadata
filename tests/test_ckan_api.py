@@ -52,3 +52,48 @@ def test_package_show(requests_mock, ckan_client):
     result = json.loads(mock_content)['result']
 
     assert result == ckan_client.package_show(pkg_name)
+
+
+def test_package_search(requests_mock, ckan_client):
+    mock_content = '{"help": "http://ckan:5000/api/3/action/help_show?name=package_search", "success": true, "result": {"count": 5, "sort": "score desc, metadata_modified desc", "facets": {}, "results": [{"name": "github-dataset"}], "search_facets": {}}}'
+    mocked_url = ckan_client.create_url('/api/3/action/package_search')
+    requests_mock.get(mocked_url, content=mock_content)
+    expected_result = json.loads(mock_content)['result']
+    assert expected_result == ckan_client.package_search()
+
+
+def test_get_datasets_list_from_search(requests_mock, ckan_client):
+    datasets = [
+        {"name": "test_pkg_0"}, {"name": "test_pkg_1"}, {"name": "test_pkg_2"}
+        ]
+    mocked_params = {'rows': 2}
+
+    # Mocking first API call
+    mocked_params['start'] = 0
+    mocked_search_result_1 = '{"help": "http://ckan:5000/api/3/action/help_show?name=package_search", "success": true, "result": {"count": 3, "sort": "score desc, metadata_modified desc", "facets": {}, "results": [{"name": "test_pkg_0"}, {"name": "test_pkg_1"}], "search_facets": {}}}'
+    mocked_url = ckan_client.create_url(
+        '/api/3/action/package_search',
+        params=mocked_params
+        )
+    requests_mock.get(mocked_url, content=mocked_search_result_1)
+
+    # Mocking second API call
+    mocked_params['start'] = 2
+    mocked_search_result_2 = '{"help": "http://ckan:5000/api/3/action/help_show?name=package_search", "success": true, "result": {"count": 3, "sort": "score desc, metadata_modified desc", "facets": {}, "results": [{"name": "test_pkg_2"}], "search_facets": {}}}'
+    mocked_url = ckan_client.create_url(
+        '/api/3/action/package_search',
+        params=mocked_params
+        )
+    requests_mock.get(mocked_url, content=mocked_search_result_2)
+
+    # Mocking third API call
+    mocked_params['start'] = 3
+    mocked_search_result_3 = '{"help": "http://ckan:5000/api/3/action/help_show?name=package_search", "success": true, "result": {"count": 3, "sort": "score desc, metadata_modified desc", "facets": {}, "results": [], "search_facets": {}}}'
+    mocked_url = ckan_client.create_url(
+        '/api/3/action/package_search',
+        params=mocked_params
+        )
+    requests_mock.get(mocked_url, content=mocked_search_result_3)
+
+    params = {'rows': 2}
+    assert datasets == ckan_client.get_datasets_list_from_search(params)
