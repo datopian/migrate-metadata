@@ -40,7 +40,7 @@ class CkanAPIClient:
 
     def get_datasets_list_from_search(self, params):
         """Iterates through the package_search API and returns a python list
-        of all datasets including draft and private ones.
+        of all datasets.
 
         In order to extract a clean complete list of datasets objects we need to
         iterate over the hard limit of 1000 per query and on each extract the
