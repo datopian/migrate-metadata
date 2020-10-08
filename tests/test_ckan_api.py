@@ -1,43 +1,54 @@
-import pytest
-import requests_mock
+import json
 
-from migrate_metadata.ckan_api import CkanAPIClient
+import pytest
+
+from migrate_metadata.ckan_api import CkanAPIClient, CkanAPIError
 
 
 @pytest.fixture()
 def ckan_client():
-    ckan_api_obj = CkanAPIClient("http://test", "xyz-123")
+    ckan_api_obj = CkanAPIClient("http://ckan:5000", "xyz-123")
     return ckan_api_obj
 
 
 def test_create_url(ckan_client):
-    suffix = '/method.com'
-    url = "http://test{}".format(suffix)
-    assert url == ckan_client.create_url(suffix)
+    path = '/action/method'
+    expected_url = "http://ckan:5000{}".format(path)
+    assert expected_url == ckan_client.create_url(path)
 
 
-@requests_mock.Mocker()
-def test_package_show(mock_request, ckan_client):
-    url = 'http://test/package_show?'
-    pkg_name = "test_pkg"
-    json_resp = {'result': {"package_dict": {"name": "test_pkg", "author": "test_user"}}}
-    mock_request.get(url,
-                     params={'id': pkg_name},
-                     headers={"Authorization": "xyz-123"},
-                     json=json_resp)
-
-    resp = ckan_client.package_show(pkg_name)
-    assert json_resp['result'] == resp
+def test_create_url_with_params(ckan_client):
+    path = '/action/method'
+    package_id = 'my-package-id'
+    expected_url = "http://ckan:5000{}?id={}".format(path, package_id)
+    params = {'id': package_id}
+    assert expected_url == ckan_client.create_url(path, params=params)
 
 
-@requests_mock.Mocker()
-def test_package_list(mock_request, ckan_client):
-    url = 'http://test/package_list'
-    json_resp = {'result': [{0: {"name": "test_pkg_0", "author": "test_user"}},
-                            {1: {"name": "test_pkg_1", "author": "test_user"}}]}
-    mock_request.get(url,
-                     headers={"Authorization": "xyz-123"},
-                     json=json_resp)
+def test_get_result_returns_result_element_of_response(ckan_client):
+    data = json.loads('{"help": "http://ckan:5000/api/3/action/help_show?name=package_list", "success": true, "result": ["dataset-with-no-releases", "github-dataset", "new-dataset-on-github", "testing-personal-storage-account", "testing-removed-resources"]}')
+    assert ckan_client.get_result(data) == data['result']
 
-    resp = ckan_client.package_list()
-    assert json_resp['result'] == resp
+
+def test_get_result_raises_error_if_api_call_returns_success_false(ckan_client):
+    data = json.loads('{"help": "http://ckan:5000/api/3/action/help_show?name=package_show", "success": false, "error": {"message": "Not found", "__type": "Not Found Error"}}')
+    with pytest.raises(CkanAPIError) as execinfo:
+        ckan_client.get_result(data)
+    assert str(execinfo.value) == "Not found"
+
+
+def test_package_list(requests_mock, ckan_client):
+    mock_content = '{"help": "http://ckan:5000/api/3/action/help_show?name=package_list", "success": true, "result": ["dataset-with-no-releases", "github-dataset", "new-dataset-on-github", "testing-personal-storage-account", "testing-removed-resources"]}'
+    mocked_url = ckan_client.create_url('/api/3/action/package_list')
+    requests_mock.get(mocked_url, content=mock_content)
+    assert json.loads(mock_content)['result'] == ckan_client.package_list()
+
+
+def test_package_show(requests_mock, ckan_client):
+    pkg_name = "github-dataset"
+    mock_content = '{"help": "http://ckan:5000/api/3/action/help_show?name=package_show", "success": true, "result": {"name": "github-dataset"} }'
+    mocked_url = ckan_client.create_url('/api/3/action/package_show?id={}'.format(pkg_name))
+    requests_mock.get(mocked_url, content=mock_content)
+    result = json.loads(mock_content)['result']
+
+    assert result == ckan_client.package_show(pkg_name)

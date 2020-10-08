@@ -7,6 +7,7 @@ import logging
 
 import click
 from frictionless_ckan_mapper import ckan_to_frictionless
+
 from metastore import create_metastore
 from metastore.backend.exc import Conflict
 from metastore.types import Author
@@ -15,7 +16,7 @@ from .ckan_api import CkanAPIClient
 
 log = logging.getLogger(__name__)
 
-LOG_FORMAT='%(asctime)-15s %(name)-15s %(levelname)s %(message)s'
+LOG_FORMAT = '%(asctime)-15s %(name)-15s %(levelname)s %(message)s'
 
 
 def migrate_all_datasets(ckan_client, metastore_client):
@@ -30,7 +31,9 @@ def migrate_all_datasets(ckan_client, metastore_client):
 def migrate_datasets(datasets, metastore_client):
     """Migrate all datasets in an iterable to metastore
     """
-    datapackages = (ckan_to_frictionless.dataset(ds) for ds in datasets)
+    datapackages = (
+        ckan_to_frictionless.dataset(ds) for ds in datasets if ds['type'] == 'dataset'
+        )
     stored = 0
     for package in datapackages:
         log.debug("Converted dataset to datapacakge: %s", package)
@@ -40,7 +43,7 @@ def migrate_datasets(datasets, metastore_client):
             stored += 1
             log.debug("Successfully stored package: %s", package['name'])
         except Conflict:
-            log.info("Package already exists in metastore bakcend: %s", package['name'])
+            log.info("Package already exists in metastore backend: %s", package['name'])
         except Exception:
             log.exception("Failed storing package: %s", package['name'])
     return stored
@@ -60,6 +63,7 @@ class JsonParamType(click.ParamType):
     """JSON serialized object as a click parameter
     """
     name = "json"
+
     def convert(self, value, param, ctx):
         try:
             return json.loads(value)
