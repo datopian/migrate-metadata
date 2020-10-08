@@ -2,5 +2,4 @@ pip-tools ==5.*
 pytest ==4.*
 pytest-isort ==1.*
 pytest-flake8 ==1.*
-mock ==3.*
 requests-mock ==1.*

@@ -5,7 +5,7 @@
 #    pip-compile --no-index --output-file dev-requirements.txt dev-requirements.in
 #
 atomicwrites==1.4.0       # via pytest
-attrs==19.3.0             # via pytest
+attrs==20.2.0             # via pytest
 backports.functools-lru-cache==1.6.1  # via isort, wcwidth
 certifi==2020.6.20        # via requests
 chardet==3.0.4            # via requests
@@ -14,14 +14,13 @@ configparser==4.0.2       # via flake8, importlib-metadata
 contextlib2==0.6.0.post1  # via importlib-metadata, zipp
 enum34==1.1.10            # via flake8
 flake8==3.8.4             # via pytest-flake8
-funcsigs==1.0.2           # via mock, pytest
+funcsigs==1.0.2           # via pytest
 functools32==3.2.3.post2  # via flake8
 futures==3.3.0            # via isort
 idna==2.10                # via requests
-importlib-metadata==1.7.0  # via flake8, pluggy, pytest
+importlib-metadata==2.0.0  # via flake8, pluggy, pytest
 isort==4.3.21             # via pytest-isort
 mccabe==0.6.1             # via flake8
-mock==3.0.5
 more-itertools==5.0.0     # via pytest
 packaging==20.4           # via pytest
 pathlib2==2.3.5           # via importlib-metadata, pytest
@@ -37,7 +36,7 @@ pytest==4.6.11
 requests-mock==1.8.0
 requests==2.24.0          # via requests-mock
 scandir==1.10.0           # via pathlib2
-six==1.15.0               # via mock, more-itertools, packaging, pip-tools, pytest, requests-mock
+six==1.15.0               # via more-itertools, packaging, pip-tools, pytest, requests-mock
 typing==3.7.4.3           # via flake8
 urllib3==1.25.10          # via requests
 wcwidth==0.2.5            # via pytest
