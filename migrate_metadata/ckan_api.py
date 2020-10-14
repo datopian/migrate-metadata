@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import RequestException
 from six.moves.urllib.parse import urlencode, urljoin
 
 
@@ -15,28 +16,19 @@ class CkanAPIClient:
 
     def package_list(self):
         url = self.create_url('/api/3/action/package_list')
-        response = requests.get(
-            url, headers={'Authorization': self.ckan_api_key}
-            )
-        data = response.json()
-        return self.get_result(data)
+        response = self._send_get_request(url)
+        return self.get_result(response)
 
     def package_show(self, pkg_name):
         params = {'id': pkg_name}
         url = self.create_url('/api/3/action/package_show', params=params)
-        response = requests.get(
-            url, headers={'Authorization': self.ckan_api_key}
-            )
-        data = response.json()
-        return self.get_result(data)
+        response = self._send_get_request(url)
+        return self.get_result(response)
 
     def package_search(self, params=None):
         url = self.create_url('/api/3/action/package_search', params=params)
-        response = requests.get(
-            url, headers={'Authorization': self.ckan_api_key}
-            )
-        data = response.json()
-        return self.get_result(data)
+        response = self._send_get_request(url)
+        return self.get_result(response)
 
     def get_datasets_list_from_search(self, params):
         """Iterates through the package_search API and returns a python list
@@ -65,8 +57,27 @@ class CkanAPIClient:
             url += '?' + urlencode(params)
         return url
 
-    def get_result(self, data):
-        if not data.get('success'):
-            raise CkanAPIError(data.get('error')['message'])
+    def get_result(self, response):
+        """Get the result of the function called from the response object.
 
-        return data.get('result')
+        CKAN API aims to always return 200 OK as the status code of its HTTP
+        response and the actual result f the function called in the result
+        element of the response.
+
+        https://docs.ckan.org/en/2.8/api/index.html#making-an-api-request
+        """
+        if not response.get('success'):
+            raise CkanAPIError(response.get('error')['message'])
+
+        return response.get('result')
+
+    def _send_get_request(self, url):
+        try:
+            response = requests.get(
+                url, headers={'Authorization': self.ckan_api_key}
+                )
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            raise CkanAPIError(e)
+
+        return response.json()
