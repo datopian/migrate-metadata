@@ -60,7 +60,7 @@ class CkanAPIClient:
         """Get the result of the function called from the response object.
 
         CKAN API aims to always return 200 OK as the status code of its HTTP
-        response and the actual result f the function called in the result
+        response and the actual result of the function called in the result
         element of the response.
 
         https://docs.ckan.org/en/2.8/api/index.html#making-an-api-request
