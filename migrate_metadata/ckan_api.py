@@ -1,5 +1,4 @@
 import requests
-from requests.exceptions import RequestException
 from six.moves.urllib.parse import urlencode, urljoin
 
 
