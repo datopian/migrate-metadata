@@ -19,15 +19,6 @@ log = logging.getLogger(__name__)
 LOG_FORMAT = '%(asctime)-15s %(name)-15s %(levelname)s %(message)s'
 
 
-def migrate_all_datasets(ckan_client, metastore_client):
-    """Migrate all datasets in the CKAN database to metastore
-    """
-    ds_list = ckan_client.package_list()
-    log.debug("Found a total of %d datasets in CKAN instance", len(ds_list))
-    datasets_iter = (ckan_client.package_show(p) for p in ds_list)
-    return migrate_datasets(datasets_iter, metastore_client)
-
-
 def migrate_datasets(datasets, metastore_client):
     """Migrate all datasets in an iterable to metastore
     """
@@ -82,8 +73,11 @@ class JsonParamType(click.ParamType):
 @click.option('--ckan-api-key', '-k', type=str, required=True, help='CKAN API key')
 @click.option('--metastore-type', '-m', type=str, required=True, help='metastore-lib backend type')
 @click.option('--metastore-options', '-o', type=JsonParamType(), default={}, help='metastore-lib options')
+@click.option('--include-private', is_flag=True, help='Include private datasets in the migration')
+@click.option('--include-drafts', is_flag=True, help='Include drafts datasets in the migration')
+@click.option('--rows', type=int, default=100, help='Number of rows to fetch per API call to package_search. Default: 100.')
 @click.option('--verbose', '-v', count=True, help='control output verbosity')
-def main(ckan_api_url, ckan_api_key, metastore_type, metastore_options, verbose):
+def main(ckan_api_url, ckan_api_key, metastore_type, metastore_options, include_private, include_drafts, rows, verbose):
     """Import all CKAN datasets into a metastore-lib backend
     """
     if verbose > 1:
@@ -97,7 +91,15 @@ def main(ckan_api_url, ckan_api_key, metastore_type, metastore_options, verbose)
 
     ckan_client = CkanAPIClient(ckan_api_url, ckan_api_key)
     metastore_client = create_metastore(metastore_type, metastore_options)
-    result = migrate_all_datasets(ckan_client, metastore_client)
+
+    params = {
+            'include_private': include_private,
+            'include_drafts': include_drafts,
+            'rows': rows,
+        }
+    click.echo("Starting the migration from: {}".format(ckan_api_url))
+    datasets = ckan_client.get_datasets_list_from_search(params)
+    result = migrate_datasets(datasets, metastore_client)
     click.echo("Successfully migrated {} datasets".format(result))
 
 
