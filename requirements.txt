@@ -4,25 +4,51 @@
 #
 #    pip-compile --no-index --output-file requirements.txt requirements.in
 #
-appdirs==1.4.4            # via fs
-backports.os==0.1.1       # via fs
-certifi==2020.6.20        # via requests
-chardet==3.0.4            # via requests
+appdirs==1.4.4
+    # via fs
+certifi==2022.12.7
+    # via requests
+chardet==3.0.4
+    # via requests
 click==7.1.2
-deprecated==1.2.10        # via pygithub
-enum34==1.1.10            # via fs
+    # via -r requirements.in
+deprecated==1.2.10
+    # via pygithub
 frictionless-ckan-mapper==1.0.6
-fs==2.4.11                # via metastore-lib
-future==0.18.2            # via backports.os
-idna==2.10                # via requests
+    # via -r requirements.in
+fs==2.4.11
+    # via metastore-lib
+idna==2.10
+    # via requests
 metastore-lib==0.2.0
-pygithub==1.45            # via metastore-lib
-pyjwt==1.7.1              # via pygithub
-python-dateutil==2.8.1    # via metastore-lib
-pytz==2020.1              # via fs, metastore-lib
+    # via -r requirements.in
+pygithub==1.45
+    # via metastore-lib
+pyjwt==1.7.1
+    # via pygithub
+python-dateutil==2.8.1
+    # via metastore-lib
+pytz==2020.1
+    # via
+    #   fs
+    #   metastore-lib
 requests==2.24.0
+    # via
+    #   -r requirements.in
+    #   pygithub
 six==1.15.0
-typing-extensions==3.7.4.3  # via metastore-lib
-typing==3.7.4.3           # via fs, metastore-lib, typing-extensions
-urllib3==1.25.10          # via requests
-wrapt==1.12.1             # via deprecated
+    # via
+    #   -r requirements.in
+    #   frictionless-ckan-mapper
+    #   fs
+    #   metastore-lib
+    #   pygithub
+    #   python-dateutil
+typing==3.7.4.3
+    # via metastore-lib
+typing-extensions==3.7.4.3
+    # via metastore-lib
+urllib3==1.25.10
+    # via requests
+wrapt==1.12.1
+    # via deprecated
